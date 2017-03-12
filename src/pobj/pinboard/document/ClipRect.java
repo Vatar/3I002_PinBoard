@@ -20,6 +20,6 @@ public class ClipRect extends AbstractClip implements Clip {
 	@Override
 	public Clip copy() {
 		return new ClipRect(getLeft(),getTop(),getRight(),getBottom(),this.getColor());
-	}
+	} 
 
 }

@@ -1,6 +1,8 @@
 package pobj.pinboard.editor;
 
 
+import java.io.File;
+
 import javax.swing.JToolBar;
 
 import javafx.event.EventHandler;
@@ -17,12 +19,16 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import pobj.pinboard.document.Board;
 import pobj.pinboard.document.ClipEllipse;
 import pobj.pinboard.editor.tools.Tool;
 import pobj.pinboard.editor.tools.ToolEllipse;
 import pobj.pinboard.editor.tools.ToolRect;
+import pobj.pinboard.editor.tools.ToolImage;
+
 
 public class EditorWindow extends javafx.application.Application
  implements EditorInterface{
@@ -126,6 +132,20 @@ public class EditorWindow extends javafx.application.Application
 			label.setText(tool.getName());
 		 } );
 		
+		Button bimg=new Button("Img...");
+		bimg.setOnAction( (e) -> {
+			 FileChooser fileChooser = new FileChooser();
+			 fileChooser.setTitle("Open Image File");
+			 fileChooser.getExtensionFilters().addAll(
+			         new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
+			         new ExtensionFilter("All Files", "*.*"));
+			 File selectedFile = fileChooser.showOpenDialog(primaryStage);
+			 if(selectedFile!=null){
+				 tool=new ToolImage(selectedFile);
+				 label.setText(tool.getName());
+			 }
+			} );
+		
 		Menu tools=new Menu("Tools");
 		MenuItem mbox=new MenuItem("Box");
 		
@@ -146,7 +166,7 @@ public class EditorWindow extends javafx.application.Application
 		
 		
 		
-		ToolBar toolbar=new ToolBar(box,ellipse,new Button("Img..."));
+		ToolBar toolbar=new ToolBar(box,ellipse,bimg);
 		vbox.getChildren().add(toolbar);
 		vbox.getChildren().add(canvas);
 		vbox.getChildren().add(new Separator());
@@ -154,7 +174,6 @@ public class EditorWindow extends javafx.application.Application
 		primaryStage.setScene(new javafx.scene.Scene(vbox));
 		primaryStage.setTitle("Dreamland");
 		
-		board.addClip(new ClipEllipse(200, 150, 400, 250, Color.RED));
 		board.draw(canvas.getGraphicsContext2D());
 		primaryStage.show();
 	}
