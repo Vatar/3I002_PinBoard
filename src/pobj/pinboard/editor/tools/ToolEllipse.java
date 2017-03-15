@@ -38,10 +38,10 @@ public class ToolEllipse implements Tool {
 	public void drawFeedback(EditorInterface i, GraphicsContext gc) {
 		gc.setFill(Color.WHITE);
 		gc.fillOval(((left+right)/2) - ((right-left)/2), ((top+bottom)/2) - ((bottom-top)/2),
-				(right-left)/2, (bottom-top)/2);
+				(right-left), (bottom-top));
 		gc.setStroke(color);
 		gc.strokeOval( ((left+right)/2) - ((right-left)/2), ((top+bottom)/2) - ((bottom-top)/2),
-				(right-left)/2, (bottom-top)/2);
+				(right-left), (bottom-top));
 	}
 
 	@Override

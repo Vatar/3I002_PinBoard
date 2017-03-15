@@ -25,6 +25,7 @@ public class ClipImage extends AbstractClip implements Clip {
 		ctx.drawImage(img, getLeft(), getTop());
 	}
 
+	
 	@Override
 	public Clip copy() {
 		return new ClipImage(getLeft(), getTop(),filename);

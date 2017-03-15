@@ -11,7 +11,7 @@ import pobj.pinboard.editor.EditorInterface;
 public class ToolRect implements Tool {
 
 	private double left,top,right,bottom;
-	private Color color=Color.BLUE;
+	private Color color=Color.PINK;
 	
 	@Override
 	public void press(EditorInterface i, MouseEvent e) {

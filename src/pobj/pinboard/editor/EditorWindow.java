@@ -2,6 +2,8 @@ package pobj.pinboard.editor;
 
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JToolBar;
 
@@ -27,6 +29,7 @@ import pobj.pinboard.document.ClipEllipse;
 import pobj.pinboard.editor.tools.Tool;
 import pobj.pinboard.editor.tools.ToolEllipse;
 import pobj.pinboard.editor.tools.ToolRect;
+import pobj.pinboard.editor.tools.ToolSelection;
 import pobj.pinboard.editor.tools.ToolImage;
 
 
@@ -35,6 +38,10 @@ public class EditorWindow extends javafx.application.Application
 	
 	private Board board;
 	private Tool tool;
+	private Selection select=new Selection();
+	private int wheight=600;
+	private int wwidth=400;
+
 	
 	public EditorWindow(Stage stage) throws Exception{
 		start(stage);
@@ -82,16 +89,62 @@ public class EditorWindow extends javafx.application.Application
 	        tool.release(ei, e);
 	        tool.drawFeedback(ei, gc);
 	        gc.setFill(Color.WHITE);
-	        gc.fillRect(0, 0, 600, 400);
+	        gc.fillRect(0, 0, wheight, wwidth);
 	    	ei.getBoard().draw(gc);
 
 	      }
 	  }
 	 
+	public Node[] initButton(Stage primaryStage,Label label){
+		
+		int nbbutton=4;
+		
+		Node[] list=new Button[nbbutton];
+		
+		Button box=new Button("Box");
+		box.setOnAction( (e) -> {
+			tool=new ToolRect();
+			label.setText(tool.getName());
+		} );
+		list[0]=box;
+		
+		Button ellipse=new Button("Ellipse");
+		ellipse.setOnAction( (e) -> {
+			tool=new ToolEllipse();
+			label.setText(tool.getName());
+		 } );
+		list[1]=ellipse;
+		
+		Button bimg=new Button("Img...");
+		bimg.setOnAction( (e) -> {
+			 FileChooser fileChooser = new FileChooser();
+			 fileChooser.setTitle("Open Image File");
+			 fileChooser.getExtensionFilters().addAll(
+			         new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
+			         new ExtensionFilter("All Files", "*.*"));
+			 File selectedFile = fileChooser.showOpenDialog(primaryStage);
+			 if(selectedFile!=null){
+				 tool=new ToolImage(selectedFile);
+				 label.setText(tool.getName());
+			 }
+			} );
+		list[2]=bimg;
+		
+		Button selection=new Button("Selection");
+		selection.setOnAction( (e) -> {
+			tool=new ToolSelection();
+			label.setText(tool.getName());
+		 } );
+		list[3]=selection;
+		
+		return list;
+	}
+
+	 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		board = new Board();
-		Canvas canvas = new Canvas(600, 400);
+		Canvas canvas = new Canvas(wheight, wwidth);
 		canvas.getGraphicsContext2D().setFill(Color.WHITE);
 		canvas.getGraphicsContext2D().fill();
 		canvas.setOnMousePressed(new MousePressed(this,canvas.getGraphicsContext2D()));
@@ -120,31 +173,7 @@ public class EditorWindow extends javafx.application.Application
 		
 		f.getItems().addAll(nouv,close);
 		
-		Button box=new Button("Box");
-		box.setOnAction( (e) -> {
-			tool=new ToolRect();
-			label.setText(tool.getName());
-		} );
 		
-		Button ellipse=new Button("Ellipse");
-		ellipse.setOnAction( (e) -> {
-			tool=new ToolEllipse();
-			label.setText(tool.getName());
-		 } );
-		
-		Button bimg=new Button("Img...");
-		bimg.setOnAction( (e) -> {
-			 FileChooser fileChooser = new FileChooser();
-			 fileChooser.setTitle("Open Image File");
-			 fileChooser.getExtensionFilters().addAll(
-			         new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
-			         new ExtensionFilter("All Files", "*.*"));
-			 File selectedFile = fileChooser.showOpenDialog(primaryStage);
-			 if(selectedFile!=null){
-				 tool=new ToolImage(selectedFile);
-				 label.setText(tool.getName());
-			 }
-			} );
 		
 		Menu tools=new Menu("Tools");
 		MenuItem mbox=new MenuItem("Box");
@@ -166,7 +195,7 @@ public class EditorWindow extends javafx.application.Application
 		
 		
 		
-		ToolBar toolbar=new ToolBar(box,ellipse,bimg);
+		ToolBar toolbar=new ToolBar(initButton(primaryStage, label));
 		vbox.getChildren().add(toolbar);
 		vbox.getChildren().add(canvas);
 		vbox.getChildren().add(new Separator());
@@ -178,6 +207,10 @@ public class EditorWindow extends javafx.application.Application
 		primaryStage.show();
 	}
 
+	public Selection getSelection(){
+		return select;
+	}
+	
 	@Override
 	public Board getBoard() {
 		return board;
