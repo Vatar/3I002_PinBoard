@@ -19,9 +19,7 @@ public class Selection {
 		clear();
 		
 		while(i<board.getContents().size() && !found){
-			System.out.println("Selecting");
 			if(board.getContents().get(i).isSelected(x, y)){
-				System.out.println("Selected"); //isSelected à résoudre!
 				selected.add(board.getContents().get(i));
 				found=true;
 			}
@@ -37,6 +35,7 @@ public class Selection {
 
 		while(i<board.getContents().size() && !found){
 			if(board.getContents().get(i).isSelected(x, y)){
+
 				if(!selected.remove(board.getContents().get(i))){
 					selected.add(board.getContents().get(i));
 				}
@@ -57,7 +56,7 @@ public class Selection {
 	public void drawFeedback(GraphicsContext gc){
 		gc.setStroke(Color.BLUE);
 		for(Clip c: selected){
-			gc.strokeRect(c.getLeft(), c.getTop(), c.getRight(), c.getBottom());
+			gc.strokeRect(c.getLeft(), c.getTop(),Math.abs(c.getRight()-c.getLeft()), Math.abs(c.getTop()-c.getBottom()));
 		}
 		
 	}

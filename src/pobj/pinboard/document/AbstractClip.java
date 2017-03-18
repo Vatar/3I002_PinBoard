@@ -51,13 +51,6 @@ public abstract class AbstractClip implements Clip {
 		setBottom(getBottom()+y);
 	}
 
-	@Override
-	public boolean isSelected(double x, double y) {
-		if(x>getLeft() && x<getRight() && y<getTop() && y>getBottom()){
-			return true;
-		}
-		return false;
-	}
 
 	@Override
 	public void setColor(Color c) {

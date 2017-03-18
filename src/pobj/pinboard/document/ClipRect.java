@@ -21,5 +21,13 @@ public class ClipRect extends AbstractClip implements Clip {
 	public Clip copy() {
 		return new ClipRect(getLeft(),getTop(),getRight(),getBottom(),this.getColor());
 	} 
+	
+	@Override
+	public boolean isSelected(double x, double y) {
+		if(x>getLeft() && x<getRight() && y>getTop() && y<getBottom()){
+			return true;
+		}
+		return false;
+	}
 
 }

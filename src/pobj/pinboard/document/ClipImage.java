@@ -20,11 +20,28 @@ public class ClipImage extends AbstractClip implements Clip {
 		
 	}
 	
+	
+	public void setRight(){
+		setRight(getLeft()+img.getWidth());
+	}
+	
+
+	public void setBottom(){
+		setBottom(getTop()+img.getHeight());
+	}
+	
 	@Override
 	public void draw(GraphicsContext ctx) {
 		ctx.drawImage(img, getLeft(), getTop());
 	}
 
+	@Override
+	public boolean isSelected(double x, double y) {
+		if(x>getLeft() && x<getRight() && y>getTop() && y<getBottom()){
+			return true;
+		}
+		return false;
+	}
 	
 	@Override
 	public Clip copy() {

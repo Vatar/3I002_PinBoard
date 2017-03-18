@@ -23,11 +23,16 @@ public class ClipEllipse extends AbstractClip implements Clip {
 
 	@Override
 	public boolean isSelected(double x,double y){
-		double res= ( Math.pow((x - ((getLeft()+getRight())/2) )/ ((getRight()-getLeft() /2)),2) )
+		/*double res= ( Math.pow((x - ((getLeft()+getRight())/2) )/ ((getRight()-getLeft() /2)),2) )
 				+ ( Math.pow((x - ((getTop()+getBottom())) )/ ((getBottom()-getTop())),2) ) ;
 		if(res <= 1){
 			return true;
-		}		
+		}*/
+		
+		if(x>getLeft() && x<getRight() && y>getTop() && y<getBottom()){
+			return true;
+		}
+		
 		return false;
 	}
 	
