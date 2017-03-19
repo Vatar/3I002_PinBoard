@@ -18,12 +18,18 @@ public class Clipboard {
 	}
 	
 	public void copyToClipboard(List<Clip> clips){
-		
+		for(Clip c:clips){
+			clip.add(c);
+		}
 	}
 	
 	public List<Clip> copyFromClipboard(){
+		List<Clip> newclip=new ArrayList<Clip>();
 		
-		return null;
+		for(Clip c:clip){
+			newclip.add(c);
+		}
+		return newclip;
 	}
 	
 	public void clear(){

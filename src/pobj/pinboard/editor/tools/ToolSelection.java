@@ -27,7 +27,7 @@ public class ToolSelection implements Tool {
 
 	@Override
 	public void drag(EditorInterface i, MouseEvent e) {
-		if(e.isShiftDown()){return;}
+		//if(e.isShiftDown()){return;}
 		for(Clip c:i.getSelection().getContents()){
 			if(c instanceof ClipRect){				
 				((ClipRect) c).setLeft(c.getLeft()+(e.getX()-xorg));

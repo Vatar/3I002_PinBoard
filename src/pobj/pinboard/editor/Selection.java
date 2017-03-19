@@ -31,7 +31,6 @@ public class Selection {
 		boolean found=false;
 		int i=0;
 		
-		clear();
 
 		while(i<board.getContents().size() && !found){
 			if(board.getContents().get(i).isSelected(x, y)){

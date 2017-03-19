@@ -151,6 +151,7 @@ public class EditorWindow extends javafx.application.Application
 		canvas.setOnMouseDragged(new MouseDragged(this,canvas.getGraphicsContext2D()));
 		canvas.setOnMouseReleased(new MouseReleased(this,canvas.getGraphicsContext2D()));
 		
+		
 		VBox vbox = new VBox();
 		
 		Label label=new Label("Idle");
@@ -174,6 +175,30 @@ public class EditorWindow extends javafx.application.Application
 		f.getItems().addAll(nouv,close);
 		
 		
+		Menu edit=new Menu("Edit");
+		
+		MenuItem copy=new MenuItem("Copy");
+		
+		copy.setOnAction( (e) -> {
+			Clipboard.getInstance().copyToClipboard(select.getContents());
+		});
+		
+		MenuItem paste=new MenuItem("Paste");
+		
+		paste.setOnAction( (e) -> {	
+			select.getContents().addAll(Clipboard.getInstance().copyFromClipboard());
+		});
+		
+		
+		MenuItem delete=new MenuItem("Delete");
+		
+		delete.setOnAction( (e) -> {
+			Clipboard.getInstance().clear();
+		});
+		
+		
+		edit.getItems().addAll(copy,paste,delete);
+		
 		
 		Menu tools=new Menu("Tools");
 		MenuItem mbox=new MenuItem("Box");
@@ -191,7 +216,9 @@ public class EditorWindow extends javafx.application.Application
 		} );
 		tools.getItems().addAll(mbox,mellipse);
 		
-		vbox.getChildren().add(new MenuBar(f,new Menu("Edit"),tools));
+		
+		
+		vbox.getChildren().add(new MenuBar(f,edit,tools));
 		
 		
 		
