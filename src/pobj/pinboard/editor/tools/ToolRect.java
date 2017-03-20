@@ -45,5 +45,5 @@ public class ToolRect implements Tool {
 	public String getName() {
 		return "Filled Rect tool";
 	}
-
+	
 }

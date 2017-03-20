@@ -34,7 +34,7 @@ import pobj.pinboard.editor.tools.ToolImage;
 
 
 public class EditorWindow extends javafx.application.Application
- implements EditorInterface{
+ implements EditorInterface,ClipboardListener{
 	
 	private Board board;
 	private Tool tool;
@@ -42,6 +42,7 @@ public class EditorWindow extends javafx.application.Application
 	private int wheight=600;
 	private int wwidth=400;
 
+	private Menu menuedit;
 	
 	public EditorWindow(Stage stage) throws Exception{
 		start(stage);
@@ -151,6 +152,7 @@ public class EditorWindow extends javafx.application.Application
 		canvas.setOnMouseDragged(new MouseDragged(this,canvas.getGraphicsContext2D()));
 		canvas.setOnMouseReleased(new MouseReleased(this,canvas.getGraphicsContext2D()));
 		
+		Clipboard.getInstance().addListener(this);
 		
 		VBox vbox = new VBox();
 		
@@ -168,6 +170,7 @@ public class EditorWindow extends javafx.application.Application
 		
 		MenuItem close=new MenuItem("Close");
 		close.setOnAction( (e) -> {
+			Clipboard.getInstance().removeListener(this);
 			primaryStage.close();
 		} );
 		
@@ -199,6 +202,9 @@ public class EditorWindow extends javafx.application.Application
 		
 		edit.getItems().addAll(copy,paste,delete);
 		
+		menuedit=edit;
+
+		clipboardChanged();
 		
 		Menu tools=new Menu("Tools");
 		MenuItem mbox=new MenuItem("Box");
@@ -217,9 +223,7 @@ public class EditorWindow extends javafx.application.Application
 		tools.getItems().addAll(mbox,mellipse);
 		
 		
-		
 		vbox.getChildren().add(new MenuBar(f,edit,tools));
-		
 		
 		
 		ToolBar toolbar=new ToolBar(initButton(primaryStage, label));
@@ -241,6 +245,16 @@ public class EditorWindow extends javafx.application.Application
 	@Override
 	public Board getBoard() {
 		return board;
+	}
+
+
+	@Override
+	public void clipboardChanged() {
+		if(Clipboard.getInstance().isEmpty()){
+			menuedit.getItems().get(1).setDisable(true);
+		}else{
+		menuedit.getItems().get(1).setDisable(false);
+		}
 	}
 
 }
