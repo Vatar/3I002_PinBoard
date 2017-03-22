@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import pobj.pinboard.document.Clip;
 import pobj.pinboard.document.ClipEllipse;
+import pobj.pinboard.document.ClipGroup;
 import pobj.pinboard.document.ClipImage;
 import pobj.pinboard.document.ClipRect;
 import pobj.pinboard.editor.EditorInterface;
@@ -28,27 +29,8 @@ public class ToolSelection implements Tool {
 	@Override
 	public void drag(EditorInterface i, MouseEvent e) {
 		//if(e.isShiftDown()){return;}
-		for(Clip c:i.getSelection().getContents()){
-			if(c instanceof ClipRect){				
-				((ClipRect) c).setLeft(c.getLeft()+(e.getX()-xorg));
-				((ClipRect) c).setTop(c.getTop()+(e.getY()-yorg));
-				((ClipRect)c).setRight(c.getRight()+(e.getX()-xorg));
-				((ClipRect) c).setBottom(c.getBottom()+(e.getY()-yorg));
-			}else{
-				if(c instanceof ClipEllipse){
-					((ClipEllipse) c).setLeft(c.getLeft()+(e.getX()-xorg));
-					((ClipEllipse) c).setTop(c.getTop()+(e.getY()-yorg));
-					((ClipEllipse) c).setRight(c.getRight()+(e.getX()-xorg));
-					((ClipEllipse) c).setBottom(c.getBottom()+(e.getY()-yorg));
-				}else{
-					if(c instanceof ClipImage){
-						((ClipImage) c).setLeft(c.getLeft()+(e.getX()-xorg));
-						((ClipImage) c).setRight();
-						((ClipImage) c).setTop(c.getTop()+(e.getY()-yorg));
-						((ClipImage) c).setBottom();
-					}
-				}
-			}
+		for(Clip c:i.getSelection().getContents()){	
+			c.move(e.getX()-xorg, e.getY()-yorg);
 		}
 		xorg=e.getX();
 		yorg=e.getY();

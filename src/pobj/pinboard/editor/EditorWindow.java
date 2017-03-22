@@ -25,7 +25,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import pobj.pinboard.document.Board;
+import pobj.pinboard.document.Clip;
 import pobj.pinboard.document.ClipEllipse;
+import pobj.pinboard.document.ClipGroup;
 import pobj.pinboard.editor.tools.Tool;
 import pobj.pinboard.editor.tools.ToolEllipse;
 import pobj.pinboard.editor.tools.ToolRect;
@@ -87,12 +89,13 @@ public class EditorWindow extends javafx.application.Application
 	    	 this.gc=gc;
 	     }
 		 public void handle( MouseEvent e ) {
-	        tool.release(ei, e);
-	        tool.drawFeedback(ei, gc);
-	        gc.setFill(Color.WHITE);
-	        gc.fillRect(0, 0, wheight, wwidth);
-	    	ei.getBoard().draw(gc);
-
+			if(tool!=null){
+				tool.release(ei, e);
+	        	tool.drawFeedback(ei, gc);
+	        	gc.setFill(Color.WHITE);
+	        	gc.fillRect(0, 0, wheight, wwidth);
+	    		ei.getBoard().draw(gc);
+			}
 	      }
 	  }
 	 
@@ -199,8 +202,28 @@ public class EditorWindow extends javafx.application.Application
 			Clipboard.getInstance().clear();
 		});
 		
+		MenuItem group=new MenuItem("Group");
 		
-		edit.getItems().addAll(copy,paste,delete);
+		group.setOnAction( (e) -> {
+			board.removeClip(select.getContents());
+			ClipGroup groupe=new ClipGroup(0, 0, 0, 0, Color.WHITE);
+			for(Clip c:select.getContents()){
+				groupe.addClip(c);
+			}
+			board.addClip(groupe);
+		});
+		
+		MenuItem ungroup=new MenuItem("Ungroup");
+		
+		ungroup.setOnAction( (e) -> {
+			if(select.getContents().get(0) instanceof ClipGroup){
+				board.removeClip(select.getContents().get(0));
+				board.addClip( ( (ClipGroup) select.getContents().get(0)).getClips() );
+			}
+			
+		});
+		
+		edit.getItems().addAll(copy,paste,delete,group,ungroup);
 		
 		menuedit=edit;
 

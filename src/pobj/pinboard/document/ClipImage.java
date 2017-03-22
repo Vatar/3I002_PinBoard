@@ -21,6 +21,11 @@ public class ClipImage extends AbstractClip implements Clip {
 	}
 	
 	
+	public void move(double x,double y){
+		this.setLeft(this.getLeft()+x);
+		this.setTop(this.getTop()+y);
+	}
+	
 	public void setRight(){
 		setRight(getLeft()+img.getWidth());
 	}
