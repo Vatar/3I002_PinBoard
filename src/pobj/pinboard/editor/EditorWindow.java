@@ -28,6 +28,9 @@ import pobj.pinboard.document.Board;
 import pobj.pinboard.document.Clip;
 import pobj.pinboard.document.ClipEllipse;
 import pobj.pinboard.document.ClipGroup;
+import pobj.pinboard.editor.commands.CommandGroup;
+import pobj.pinboard.editor.commands.CommandStack;
+import pobj.pinboard.editor.commands.CommandUngroup;
 import pobj.pinboard.editor.tools.Tool;
 import pobj.pinboard.editor.tools.ToolEllipse;
 import pobj.pinboard.editor.tools.ToolRect;
@@ -43,6 +46,7 @@ public class EditorWindow extends javafx.application.Application
 	private Selection select=new Selection();
 	private int wheight=600;
 	private int wwidth=400;
+	private CommandStack stack=new CommandStack();
 
 	private Menu menuedit;
 	
@@ -96,6 +100,7 @@ public class EditorWindow extends javafx.application.Application
 	        	gc.fillRect(0, 0, wheight, wwidth);
 	    		ei.getBoard().draw(gc);
 			}
+			undoChanged();
 	      }
 	  }
 	 
@@ -193,6 +198,7 @@ public class EditorWindow extends javafx.application.Application
 		
 		paste.setOnAction( (e) -> {	
 			select.getContents().addAll(Clipboard.getInstance().copyFromClipboard());
+			redraw(canvas);
 		});
 		
 		
@@ -205,29 +211,48 @@ public class EditorWindow extends javafx.application.Application
 		MenuItem group=new MenuItem("Group");
 		
 		group.setOnAction( (e) -> {
-			board.removeClip(select.getContents());
 			ClipGroup groupe=new ClipGroup(0, 0, 0, 0, Color.WHITE);
 			for(Clip c:select.getContents()){
 				groupe.addClip(c);
 			}
-			board.addClip(groupe);
+			stack.addCommand(new CommandGroup(this,groupe));
+			undoChanged();
 		});
 		
 		MenuItem ungroup=new MenuItem("Ungroup");
 		
 		ungroup.setOnAction( (e) -> {
 			if(select.getContents().get(0) instanceof ClipGroup){
-				board.removeClip(select.getContents().get(0));
-				board.addClip( ( (ClipGroup) select.getContents().get(0)).getClips() );
+				stack.addCommand(new CommandUngroup(this,(ClipGroup) select.getContents().get(0)));
 			}
-			
+			undoChanged();
 		});
 		
-		edit.getItems().addAll(copy,paste,delete,group,ungroup);
+		MenuItem undo=new MenuItem("Undo");
+		
+		undo.setOnAction( (e) -> {
+			stack.undo();
+			undoChanged();
+			redoChanged();
+			redraw(canvas);
+		});
+		
+		MenuItem redo=new MenuItem("Redo");
+		
+		redo.setOnAction( (e)-> {
+			stack.redo();
+			redoChanged();
+			undoChanged();
+			redraw(canvas);
+		});
+		
+		edit.getItems().addAll(copy,paste,delete,group,ungroup,undo,redo);
 		
 		menuedit=edit;
 
 		clipboardChanged();
+		undoChanged();
+		redoChanged();
 		
 		Menu tools=new Menu("Tools");
 		MenuItem mbox=new MenuItem("Box");
@@ -269,6 +294,10 @@ public class EditorWindow extends javafx.application.Application
 	public Board getBoard() {
 		return board;
 	}
+	
+	public CommandStack getStack(){
+		return stack;
+	}
 
 
 	@Override
@@ -278,6 +307,28 @@ public class EditorWindow extends javafx.application.Application
 		}else{
 		menuedit.getItems().get(1).setDisable(false);
 		}
+	}
+	
+	public void undoChanged(){
+		if(stack.isUndoEmpty()){
+			menuedit.getItems().get(5).setDisable(true);
+		}else{
+			menuedit.getItems().get(5).setDisable(false);
+		}	
+	}
+	
+	public void redoChanged(){
+		if(stack.isRedoEmpty()){
+			menuedit.getItems().get(6).setDisable(true);
+		}else{
+			menuedit.getItems().get(6).setDisable(false);
+		}	
+	}
+	
+	public void redraw(Canvas canvas){
+		canvas.getGraphicsContext2D().setFill(Color.WHITE);
+    	canvas.getGraphicsContext2D().fillRect(0, 0, wheight, wwidth);
+		board.draw(canvas.getGraphicsContext2D());
 	}
 
 }

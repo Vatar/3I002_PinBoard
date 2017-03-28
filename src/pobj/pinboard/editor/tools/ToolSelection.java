@@ -10,6 +10,7 @@ import pobj.pinboard.document.ClipImage;
 import pobj.pinboard.document.ClipRect;
 import pobj.pinboard.editor.EditorInterface;
 import pobj.pinboard.editor.Selection;
+import pobj.pinboard.editor.commands.CommandMove;
 
 public class ToolSelection implements Tool {
 	private double xorg;
@@ -29,9 +30,11 @@ public class ToolSelection implements Tool {
 	@Override
 	public void drag(EditorInterface i, MouseEvent e) {
 		//if(e.isShiftDown()){return;}
-		for(Clip c:i.getSelection().getContents()){	
-			c.move(e.getX()-xorg, e.getY()-yorg);
-		}
+		i.getStack().addCommand(new CommandMove(i.getSelection().getContents(),
+				e.getX()-xorg,e.getY()-yorg));
+		//for(Clip c:i.getSelection().getContents()){	
+			//c.move(e.getX()-xorg, e.getY()-yorg);
+		//}
 		xorg=e.getX();
 		yorg=e.getY();
 	}

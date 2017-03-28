@@ -1,12 +1,18 @@
 package pobj.pinboard.editor.tools;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import pobj.pinboard.document.Board;
+import pobj.pinboard.document.Clip;
 import pobj.pinboard.document.ClipRect;
 import pobj.pinboard.editor.EditorInterface;
+import pobj.pinboard.editor.EditorWindow;
+import pobj.pinboard.editor.commands.CommandAdd;
 
 public class ToolRect implements Tool {
 
@@ -29,8 +35,9 @@ public class ToolRect implements Tool {
 
 	@Override
 	public void release(EditorInterface i, MouseEvent e) {
-		Board b=i.getBoard();
-		b.addClip(new ClipRect(left, top, right, bottom, color));
+		List<Clip> list= new ArrayList<Clip>();
+		list.add(new ClipRect(left,top,right,bottom,color));
+		i.getStack().addCommand(new CommandAdd((EditorWindow) i,list));
 	}
 
 	@Override
